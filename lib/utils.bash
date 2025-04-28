@@ -37,8 +37,8 @@ download_release() {
 	version="$1"
 	filename="$2"
 
-	uname_kernel_name="$(uname --kernel-name)"
-	uname_machine="$(uname --machine)"
+	uname_kernel_name="$(uname -s)"
+	uname_machine="$(uname -m)"
 
 	case "$uname_kernel_name" in
 	Linux)
