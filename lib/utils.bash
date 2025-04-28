@@ -33,11 +33,48 @@ list_all_versions() {
 }
 
 download_release() {
-	local version filename url
+	local version filename url os uname_kernel_name uname_machine release_file
 	version="$1"
 	filename="$2"
 
-	url="$GH_REPO/releases/download/${version}/${filename}"
+	uname_kernel_name="$(uname --kernel-name)"
+	uname_machine="$(uname --machine)"
+
+	case "$uname_kernel_name" in
+	Linux)
+		uname_s="Linux"
+
+		case "$uname_machine" in
+		x86_64)
+			release_file="linux_amd64"
+			;;
+		aarch64)
+			release_file="linux_arm64"
+			;;
+		*)
+			fail "Machine not supported: $uname_machine"
+			;;
+		esac
+		;;
+	Darwin)
+		case "$uname_machine" in
+		x86_64)
+			release_file="darwin_amd64"
+			;;
+		arm)
+			release_file="darwin_arm64"
+			;;
+		*)
+			fail "Machine not supported: $uname_machine"
+			;;
+		esac
+		;;
+	*)
+		fail "Kernel not supported: $uname_kernel_name"
+		;;
+	esac
+
+	url="$GH_REPO/releases/download/${version}/${TOOL_NAME}_${version}_${release_file}.tar.gz"
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
