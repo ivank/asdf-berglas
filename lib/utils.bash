@@ -61,7 +61,7 @@ download_release() {
 		x86_64)
 			release_file="darwin_amd64"
 			;;
-		arm)
+		arm64)
 			release_file="darwin_arm64"
 			;;
 		*)
